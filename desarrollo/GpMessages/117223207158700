@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: martes, 25 de febrero de 2025 16:23:37</msg><msg code="0" type="0">
+He pasado por updateParameterInfo</msg><msg code="0" type="0">
+He pasado por updateMessages</msg><msg code="0" type="0">
+Comprobada la existencia de una capa temporal previa.</msg><msg code="0" type="0">
+Se ha creado la carpeta 'resultados'</msg><msg code="0" type="0">
+Iniciado el proceso de creación de capas a partir de registros a las 16:23:38 25.02.2025</msg><msg code="0" type="0">Procesado el 0.4% de los registros</msg><msg code="0" type="0">Procesado el 5.5% de los registros</msg><msg code="0" type="0">Procesado el 10.6% de los registros</msg><msg code="0" type="0">Procesado el 15.7% de los registros</msg><msg code="0" type="0">Procesado el 20.9% de los registros</msg><msg code="1" type="100">ERROR EN LA EXTRACCIÓN &gt;&gt;&gt; 'Failed to execute. Parameters are not valid.
+ERROR 000732: Layer: Dataset capa_temporal does not exist or is not supported
+Failed to execute (LayerToKML).
+</msg><msg code="0" type="200">Canceled function</msg><msg code="-2147467259" type="100">Failed to execute (FeatureToKML).</msg><msg code="0" type="3">Failed at martes, 25 de febrero de 2025 16:23:59 (Elapsed Time: 21.70 seconds)</msg></messages>

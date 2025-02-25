@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: martes, 25 de febrero de 2025 16:20:50</msg><msg code="0" type="0">
+He pasado por updateParameterInfo</msg><msg code="0" type="0">
+He pasado por updateMessages</msg><msg code="0" type="0">
+Comprobada la existencia de una capa temporal previa.</msg><msg code="0" type="50">
+Existe una carpeta con el nombre 'resultados' con contenido, por lo que se ha renombrada como 'resultados_20250225162050'</msg><msg code="0" type="0">
+Se ha creado la carpeta 'resultados'</msg><msg code="0" type="0">
+Iniciado el proceso de creación de capas a partir de registros a las 16:20:50 25.02.2025</msg><msg code="0" type="0">Procesado el 0.4% de los registros</msg><msg code="0" type="0">Procesado el 5.5% de los registros</msg><msg code="0" type="0">Procesado el 10.6% de los registros</msg><msg code="0" type="0">Procesado el 15.7% de los registros</msg><msg code="0" type="0">Procesado el 20.9% de los registros</msg><msg code="0" type="0">Procesado el 26.0% de los registros</msg><msg code="0" type="0">Procesado el 31.1% de los registros</msg><msg code="0" type="200">Canceled function</msg><msg code="0" type="200">(FeatureToKML) aborted by User.</msg><msg code="0" type="3">Failed at martes, 25 de febrero de 2025 16:21:22 (Elapsed Time: 32.60 seconds)</msg></messages>
