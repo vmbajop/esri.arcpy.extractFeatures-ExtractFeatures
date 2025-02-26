@@ -4,7 +4,6 @@ Plantilla: https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_pyth
 import arcpy
 import os
 import datetime
-import debugpy
 
 class Toolbox(object):
     def __init__(self):
