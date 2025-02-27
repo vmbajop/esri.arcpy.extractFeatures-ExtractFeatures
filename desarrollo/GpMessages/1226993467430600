@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: jueves, 27 de febrero de 2025 12:57:31</msg><msg code="0" type="0">
+Nombre de carpeta de salidad cambiado a D:\trabajo\Git\python\ArcPy\esri.arcpy.extractFeatures-Feature2KML\desarrollo\Ft2KML_results</msg><msg code="0" type="0">
+He pasado por updateMessages</msg><msg code="0" type="0">
+Comprobada la existencia de una capa temporal previa.</msg><msg code="1" type="100">ERROR en COMPROBAR CARPETA &gt;&gt;&gt; '[WinError 3] El sistema no puede encontrar la ruta especificada: '''</msg><msg code="0" type="0">
+Iniciado el proceso de creación de capas a partir de registros a las 12:57:31 27.02.2025</msg><msg code="1" type="100">ERROR EN LA EXTRACCIÓN &gt;&gt;&gt; 'Failed to execute. Parameters are not valid.
+ERROR 000814: Invalid file type
+ERROR 000840: The value is not a KML Layer.
+Failed to execute (LayerToKML).
+</msg><msg code="-2147467259" type="100">Failed to execute (FeatureToKML).</msg><msg code="0" type="3">Failed at jueves, 27 de febrero de 2025 12:57:32 (Elapsed Time: 0.84 seconds)</msg></messages>

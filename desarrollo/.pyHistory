@@ -1,0 +1,2 @@
+﻿import arcpy
+arcpy.ImportToolbox("D:\\trabajo\\Git\\python\\ArcPy\\esri.arcpy.extractFeatures-Feature2KML\\desarrollo\\Extraer Features_v1.1.pyt")
