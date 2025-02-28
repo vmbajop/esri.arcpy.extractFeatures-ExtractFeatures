@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: viernes, 28 de febrero de 2025 14:13:09</msg><msg code="0" type="0">
+Feature To KML:
+Extraer entidades de una capa para crear una nueva capa KML por cada entidad, que tendrá por nombre el valor de un campo elegido por el usuario.
+version: 1.1.1</msg><msg code="0" type="0">
+La carpeta de salidad es C:\trabajo\git-and-github\perso\esri.arcpy.extractFeatures-Feature2KML\desarrollo\Feature2KML_resultados</msg><msg code="0" type="0">
+Comprobada la existencia de una capa temporal previa.</msg><msg code="0" type="50">
+Existe una carpeta con el nombre 'Feature2KML_resultados' con contenido, por lo que se ha renombrada como 'Feature2KML_resultados_20250228141309'</msg><msg code="0" type="0">
+Se ha creado la carpeta 'Feature2KML_resultados'</msg><msg code="0" type="0">
+Iniciado el proceso de creación de capas a partir de registros a las 14:13:09 28.02.2025</msg><msg code="0" type="0">
+Finalizado el proceso de creación de capas a partir de registros a las 14:14:10 28.02.2025
+</msg><msg code="0" type="3">Succeeded at viernes, 28 de febrero de 2025 14:14:10 (Elapsed Time: 1 minutes 1 seconds)</msg></messages>

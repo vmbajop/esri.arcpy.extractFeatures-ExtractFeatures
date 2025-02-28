@@ -28,7 +28,7 @@ class FeatureToKML(object):
         # propiedades parametrizables
         #-------------------------------------
         self.nombre_capa_temporal = "capa_temporal"
-        self.salto_mensaje_porcentajes = 5
+        # self.salto_mensaje_porcentajes = 5
 
         #-------------------------------------
         # constantes
@@ -103,7 +103,6 @@ class FeatureToKML(object):
         has been changed."""
         if parameters[3].value:
             parameters[4].value = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
-            arcpy.AddMessage(f"\nla carpeta de salidad es {parameters[4].value}")
         else:
             # self.carpeta_resultado = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
             arcpy.AddError(f"\nNo hay carpeta de salida")
@@ -113,9 +112,10 @@ class FeatureToKML(object):
 # region EXECUTE
     def execute(self, parameters, messages):
         arcpy.AddMessage(f"\n{self.label}:\n{self.description}\nversion: {self.version}")
-        try:
+        arcpy.AddMessage(f"\nLa carpeta de salidad es {parameters[4].value}")
+        try:           
             self.numero_registros = arcpy.management.GetCount(parameters[0].value)
-            self.numero_registros_int = int(self.numero_registros.getOutput(0))
+            arcpy.SetProgressor("step", f"Comienza el procesado de {self.numero_registros} registros", 0, int(self.numero_registros.getOutput(0)), 1)
 
             self.ComprobarExistenciaCapaTemporalTOC()
             self.ComprobarExistenciaCarpetaResultados(parameters[3].valueAsText, parameters[4].valueAsText)
@@ -162,7 +162,6 @@ class FeatureToKML(object):
             with arcpy.da.SearchCursor(capa_entrada, ['OID@', campo_nombre]) as cursor:
                 arcpy.AddMessage("\nIniciado el proceso de creación de capas a partir de registros a las " + str(datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")))
                 i = 1
-                fraccion_aux = 0
                 for row in cursor:
                     sql = f"OBJECTID = {row[0]}"
                     arcpy.management.MakeFeatureLayer(capa_entrada, self.nombre_capa_temporal, sql)
@@ -175,13 +174,10 @@ class FeatureToKML(object):
                     # -----------------------------------------
                     arcpy.conversion.LayerToKML(self.nombre_capa_temporal, parameters[4].valueAsText + "\\" + nombre_kml)
                     arcpy.management.Delete(self.nombre_capa_temporal)
-                    
-                    # arcpy.AddMessage("Procesado: " + str(i) + " de " + str(numero_registros))
-                    fraccion = round((i / self.numero_registros_int) * 100, 1)
-                    if fraccion_aux == 0 or fraccion > fraccion_aux + self.salto_mensaje_porcentajes or fraccion >= 100:
-                        arcpy.AddMessage("Procesado el " + str(fraccion) + "% de los registros")
-                        fraccion_aux = fraccion
+                    arcpy.SetProgressorLabel(f"Procesados {i} de {self.numero_registros} registros")
+                    arcpy.SetProgressorPosition(i)
                     i = i + 1
+                    
                 arcpy.AddMessage("\nFinalizado el proceso de creación de capas a partir de registros a las " + str(datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")) + "\n")
         except Exception as e:
             arcpy.AddError(f"\nERROR EN LA EXTRACCIÓN >>> '{e}")

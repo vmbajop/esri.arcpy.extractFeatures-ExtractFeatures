@@ -1,10 +1,15 @@
 # Versiones de desarrollo
 
-## versión 1.2 (trabajando en ella)
+## versión 1.3 (trabajando en ella)
+1. conseguir controlar los mensajes de forma más adecuada
+2. Validar los parámetros
+3. validar la post ejecución
+4. En vez de poner la carpeta mediante el parámetro nombre de carpeta, hacerlo mediante el diálogo de navegación para crear nueva carpeta
+5. controlar el idioma de los mensajes y interfaz ----> es probable que nos lleve a paquetizar.
 
-1. conseguir controlar el progreso de la tarea gráficamente en vez de numéricamente
+## versión 1.2
 
-2. conseguir controlar los mensajes a través del métoco específico
+1. Se controla el progreso de la tarea gráficamente en vez de numéricamente
 
 ## versión 1.1.1
 
