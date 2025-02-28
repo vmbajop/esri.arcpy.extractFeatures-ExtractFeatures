@@ -22,12 +22,11 @@ class FeatureToKML(object):
         #DUDA DE SI SIRVEN
         self.description = "Extraer entidades de una capa para crear una nueva capa KML por cada entidad, que tendrá por nombre el valor de un campo elegido por el usuario."
         self.canRunInBackground = False
-        self.version = "1.1"
+        self.version = "1.1.1"
 
         #-------------------------------------
         # propiedades parametrizables
         #-------------------------------------
-        # self.nombre_carpeta_resultado = "resultados"
         self.nombre_capa_temporal = "capa_temporal"
         self.salto_mensaje_porcentajes = 5
 
@@ -37,7 +36,6 @@ class FeatureToKML(object):
         proyecto = arcpy.mp.ArcGISProject("CURRENT")
         self.mapa = proyecto.listMaps()[0]
         self.ruta_proyecto = proyecto.filePath
-        self.carpeta_resultado = "" # os.path.join(os.path.dirname(ruta_proyecto), self.nombre_carpeta_resultado)
          #-------------------------------------    
 
     def getParameterInfo(self):
@@ -78,39 +76,49 @@ class FeatureToKML(object):
         )
         param3.value="Feature2KML_resultados"
 
-        params =[param0, param1, param2, param3]
+        param4 = arcpy.Parameter(
+            name="CarpetaResultados",
+            displayName="Carpeta de salidad de los resultados",
+            direction="Output",
+            parameterType="Derived",
+            datatype="DEFolder"
+        )
+
+        params =[param0, param1, param2, param3, param4]
         return params
     
 # region NO USADOS
     def isLicensed(self): # Es opcional
         # La herramienta usada (arcpy.conversion.LayerToKML()) está disponible en Basic, por tanto siempre está licenciado
-        arcpy.AddMessage("\nHe pasado por isLicensed")
         return True
     
     def updateMessages(self, parameters):
         """Modify the messages created by internal validation for each tool
         parameter. This method is called after internal validation."""
-        arcpy.AddMessage("\nHe pasado por updateMessages")
         return
 
     def updateParameters(self, parameters):
         """Modify the values and properties of parameters before internal
         validation is performed.  This method is called whenever a parameter
         has been changed."""
-        # self.carpeta_resultado = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
-        arcpy.AddMessage(f"\nHe pasado por updateParameterInfo")
+        if parameters[3].value:
+            parameters[4].value = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
+            arcpy.AddMessage(f"\nla carpeta de salidad es {parameters[4].value}")
+        else:
+            # self.carpeta_resultado = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
+            arcpy.AddError(f"\nNo hay carpeta de salida")
         return
 # endregion    
 
 # region EXECUTE
     def execute(self, parameters, messages):
+        arcpy.AddMessage(f"\n{self.label}:\n{self.description}\nversion: {self.version}")
         try:
-            self.carpeta_resultado = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
             self.numero_registros = arcpy.management.GetCount(parameters[0].value)
             self.numero_registros_int = int(self.numero_registros.getOutput(0))
 
             self.ComprobarExistenciaCapaTemporalTOC()
-            self.ComprobarExistenciaCarpetaResultados(parameters[3].valueAsText)
+            self.ComprobarExistenciaCarpetaResultados(parameters[3].valueAsText, parameters[4].valueAsText)
 
             self.ExtraerFeature2KML(parameters)
         except Exception as e:
@@ -123,26 +131,26 @@ class FeatureToKML(object):
                 arcpy.AddMessage(f"\nEliminada una capa con nombre '{self.nombre_capa_temporal}'")
         arcpy.AddMessage("\nComprobada la existencia de una capa temporal previa.")
 
-    def ComprobarExistenciaCarpetaResultados(self, nombreCarpeta):
+    def ComprobarExistenciaCarpetaResultados(self, nombreCarpeta, carpeta_resultado):
         try:  
-            if os.path.exists(self.carpeta_resultado):
-                if not os.listdir(self.carpeta_resultado):
-                    arcpy.AddMessage(f"\nLa carpeta '{self.carpeta_resultado}' existe, está vacía y se va a reutilizar")
+            if os.path.exists(carpeta_resultado):
+                if not os.listdir(carpeta_resultado):
+                    arcpy.AddMessage(f"\nLa carpeta '{carpeta_resultado}' existe, está vacía y se va a reutilizar")
                 else:
                     fh = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                     nuevo_nombre = f"{nombreCarpeta}_{fh}"
-                    nueva_ruta = os.path.join(os.path.dirname(self.carpeta_resultado), nuevo_nombre)
-                    os.rename(self.carpeta_resultado, nueva_ruta)
+                    nueva_ruta = os.path.join(os.path.dirname(carpeta_resultado), nuevo_nombre)
+                    os.rename(carpeta_resultado, nueva_ruta)
                     arcpy.AddWarning(f"\nExiste una carpeta con el nombre '{nombreCarpeta}' con contenido, por lo que se ha renombrada como '{nuevo_nombre}'")
-                    self.CrearCarpetaResultados(nombreCarpeta)
+                    self.CrearCarpetaResultados(nombreCarpeta, carpeta_resultado)
             else:
-                self.CrearCarpetaResultados(nombreCarpeta)
+                self.CrearCarpetaResultados(nombreCarpeta, carpeta_resultado)
             
         except Exception as e:
-            arcpy.AddError(f"ERROR en COMPROBAR CARPETA >>> '{e}'")
+            arcpy.AddError(f"\nERROR en COMPROBAR CARPETA >>> '{e}'")
 
-    def CrearCarpetaResultados(self, nombreCarpeta):
-        os.makedirs(self.carpeta_resultado)
+    def CrearCarpetaResultados(self, nombreCarpeta, carpeta_resultado):
+        os.makedirs(carpeta_resultado)
         arcpy.AddMessage(f"\nSe ha creado la carpeta '{nombreCarpeta}'")
 
     def ExtraerFeature2KML(self, parameters):
@@ -161,11 +169,11 @@ class FeatureToKML(object):
                     nombre_kml = prenombre_capa_salida + f"{row[1]}" + ".kml"
                     # Comprobar si existe el nombre y renombrar
                     count = 1
-                    while arcpy.Exists(os.path.join(self.carpeta_resultado, nombre_kml)):
+                    while arcpy.Exists(os.path.join(parameters[4].valueAsText, nombre_kml)):
                         nombre_kml = prenombre_capa_salida + f"{row[1]}"+ str(count) + ".kml"
                         count += 1
                     # -----------------------------------------
-                    arcpy.conversion.LayerToKML(self.nombre_capa_temporal, self.carpeta_resultado + "\\" + nombre_kml)
+                    arcpy.conversion.LayerToKML(self.nombre_capa_temporal, parameters[4].valueAsText + "\\" + nombre_kml)
                     arcpy.management.Delete(self.nombre_capa_temporal)
                     
                     # arcpy.AddMessage("Procesado: " + str(i) + " de " + str(numero_registros))
@@ -174,9 +182,9 @@ class FeatureToKML(object):
                         arcpy.AddMessage("Procesado el " + str(fraccion) + "% de los registros")
                         fraccion_aux = fraccion
                     i = i + 1
-                arcpy.AddMessage("Finalizado el proceso de creación de capas a partir de registros a las " + str(datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")) + "\n")
+                arcpy.AddMessage("\nFinalizado el proceso de creación de capas a partir de registros a las " + str(datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")) + "\n")
         except Exception as e:
-            arcpy.AddError(f"ERROR EN LA EXTRACCIÓN >>> '{e}")
+            arcpy.AddError(f"\nERROR EN LA EXTRACCIÓN >>> '{e}")
 # endregion
 
     def postExecute(self, parameters):
