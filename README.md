@@ -1,29 +1,25 @@
-# Versiones de desarrollo 
+# Versiones de desarrollo
 
-## versión 1.1.1 (trabajando en ella)
+## versión 1.2 (trabajando en ella)
 
-Objetivos:
+1. conseguir controlar el progreso de la tarea gráficamente en vez de numéricamente
 
-1. conseguir que
+2. conseguir controlar los mensajes a través del métoco específico
 
-```python
+## versión 1.1.1
 
-self.carpeta_resultado = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
-
-```
-
-se pueda controlar desde
+1. Mejora interna en el manejo de la carpeta de salida como variable.
+Ahora es unparámetro derivado del parámetros _"nombre de carpeta de salida"_ que introduce el usuario. Se gestiona internamente en el método
 
 ```python
-
 updateParameters(self, parameters)
-
 ```
 
-La idea es ver si se puede construir como parámetro oculto dependiente del param3
+y ya no se controla mediante una propiedad de alcance de clase como 
 
-2. conseguir controlar el progreso de la tarea gráficamente en vez de numéricamente
-3. conseguir controlar los mensajes a través del métoco específico
+```python
+self.carpeta_resultados
+```
 
 ## versión 1.1
 funcionalidad añadida:
