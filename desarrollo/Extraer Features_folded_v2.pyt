@@ -128,7 +128,7 @@ class FeatureToKML(object):
             # Parámetros
             capa_entrada = parameters[0].value
             campo_nombre = parameters[1].valueAsText
-            prenombre_capa_salida = parameters[2].valueAsText
+            # prenombre_capa_salida = parameters[2].valueAsText
 
             # cursor con los registros de la capa de entrada, de la que se cogen dos campos: OID/ID y el campo seleccionado para dar nombre a las capas
             with arcpy.da.SearchCursor(capa_entrada, ['OID@', campo_nombre]) as cursor:
@@ -138,17 +138,24 @@ class FeatureToKML(object):
                     # cogemos el registro actual mediante una sentencia SQL que dice: ObjectID = al valor del campo [0] del registro actual.
                     # El campo [0] es OID, el elegido en la intefaz es el [1]
                     sql = f"OBJECTID = {row[0]}"
-                    
-                    arcpy.management.MakeFeatureLayer(capa_entrada, self.nombre_capa_temporal, sql)
-                    nombre_kml = prenombre_capa_salida + f"{row[1]}" + ".kml"
+
+                    # arcpy.management.MakeFeatureLayer(capa_entrada, self.nombre_capa_temporal, sql)
+                    """ nombre_kml = prenombre_capa_salida + f"{row[1]}" + ".kml"
                     # Comprobar si existe el nombre y renombrar
                     count = 1
                     while arcpy.Exists(os.path.join(parameters[3].valueAsText, nombre_kml)):
                         nombre_kml = prenombre_capa_salida + f"{row[1]}"+ str(count) + ".kml"
-                        count += 1
+                        count += 1 """
+                    nombre_kml = self.GenerarNombreCapaSalida_Contador(parameters, row)
                     # -----------------------------------------
-                    arcpy.conversion.LayerToKML(self.nombre_capa_temporal, parameters[3].valueAsText + "\\" + nombre_kml)
-                    arcpy.management.Delete(self.nombre_capa_temporal)
+                    
+                    # Separar la extension kml del nombre del archivo
+                    nombre_sin_extension, extension = os.path.splitext(nombre_kml)
+
+                    arcpy.management.MakeFeatureLayer(capa_entrada, nombre_sin_extension + "fl", sql)
+
+                    arcpy.conversion.LayerToKML(nombre_sin_extension + "fl", parameters[3].valueAsText + "\\" + nombre_kml)
+                    arcpy.management.Delete(nombre_sin_extension + "fl")
                     arcpy.SetProgressorLabel(f"Procesados {i} de {self.numero_registros} registros")
                     arcpy.SetProgressorPosition(i)
                     i = i + 1
@@ -156,6 +163,15 @@ class FeatureToKML(object):
                 arcpy.AddMessage("\nFinalizado el proceso de creación de capas a partir de registros a las " + str(datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")) + "\n")
         except Exception as e:
             arcpy.AddError(f"\nERROR EN LA EXTRACCIÓN >>> '{e}")
+
+    def GenerarNombreCapaSalida_Contador(self, parameters, row):
+        nombre_kml = parameters[2].valueAsText + f"{row[1]}" + ".kml"
+        # Comprobar si existe el nombre y renombrar
+        count = 1
+        while arcpy.Exists(os.path.join(parameters[3].valueAsText, nombre_kml)):
+            nombre_kml = parameters[2].valueAsText + f"{row[1]}"+ str(count) + ".kml"
+            count += 1
+        return nombre_kml
 # endregion
 
     def postExecute(self, parameters):

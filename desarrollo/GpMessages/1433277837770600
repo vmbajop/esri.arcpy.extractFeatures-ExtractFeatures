@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: sábado, 1 de marzo de 2025 22:15:31</msg><msg code="0" type="0">
+Feature To KML:
+Extraer entidades de una capa para crear una nueva capa KML por cada entidad, que tendrá por nombre el valor de un campo elegido por el usuario.
+version: 1.1.1</msg><msg code="1" type="100">﻿Traceback (most recent call last):
+﻿  File "D:\trabajo\Git\python\ArcPy\esri.arcpy.extractFeatures-Feature2KML\desarrollo\Extraer Features_folded_v2.pyt", line 118, in execute
+﻿    arcpy.AddMessage(f"\nLa carpeta de salidad es {parameters[4].value}")
+﻿                                                   ~~~~~~~~~~^^^
+﻿IndexError: list index out of range
+</msg><msg code="-2147467259" type="100">Failed to execute (FeatureToKML).</msg><msg code="0" type="3">Failed at sábado, 1 de marzo de 2025 22:15:32 (Elapsed Time: 1,03 seconds)</msg></messages>
