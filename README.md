@@ -4,8 +4,7 @@
 1. conseguir controlar los mensajes de forma más adecuada
 2. Validar los parámetros
 3. validar la post ejecución
-4. En vez de poner la carpeta mediante el parámetro nombre de carpeta, hacerlo mediante el diálogo de navegación para crear nueva carpeta
-5. controlar el idioma de los mensajes y interfaz ----> es probable que nos lleve a paquetizar.
+4. controlar el idioma de los mensajes y interfaz ----> es probable que nos lleve a paquetizar.
 
 ## versión 1.2
 
