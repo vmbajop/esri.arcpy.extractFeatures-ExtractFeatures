@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: jueves, 27 de febrero de 2025 11:13:06</msg><msg code="0" type="0">
-He pasado por updateParameterInfo</msg><msg code="0" type="0">
-He pasado por updateMessages</msg><msg code="0" type="0">
-Comprobada la existencia de una capa temporal previa.</msg><msg code="1" type="100">ERROR En COMPROBAR CARPETA &gt;&gt;&gt; ''FeatureToKML' object has no attribute 'carpeta_resultado''</msg><msg code="0" type="0">
-Iniciado el proceso de creación de capas a partir de registros a las 11:13:07 27.02.2025</msg><msg code="1" type="100">ERROR EN LA EXTRACCIÓN &gt;&gt;&gt; ''FeatureToKML' object has no attribute 'carpeta_resultado'</msg><msg code="-2147467259" type="100">Failed to execute (FeatureToKML).</msg><msg code="0" type="3">Failed at jueves, 27 de febrero de 2025 11:13:07 (Elapsed Time: 0.81 seconds)</msg></messages>

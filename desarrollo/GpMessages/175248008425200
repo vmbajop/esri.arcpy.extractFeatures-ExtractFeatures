@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: viernes, 28 de febrero de 2025 12:01:04</msg><msg code="0" type="0">
-la carpeta de salidad es &lt;geoprocessing parameter object object at 0x0000029CA9A61C30&gt;</msg><msg code="0" type="0">
-He pasado por updateMessages</msg><msg code="0" type="0">
-Comprobada la existencia de una capa temporal previa.</msg><msg code="0" type="0">\entradas: Feature2KML_resultados y C:\trabajo\git-and-github\perso\esri.arcpy.extractFeatures-Feature2KML\desarrollo\Feature2KML_resultados</msg><msg code="1" type="100">ERROR en COMPROBAR CARPETA &gt;&gt;&gt; 'stat: path should be string, bytes, os.PathLike or integer, not geoprocessing value object'</msg><msg code="0" type="0">
-Iniciado el proceso de creación de capas a partir de registros a las 12:01:04 28.02.2025</msg><msg code="1" type="100">ERROR EN LA EXTRACCIÓN &gt;&gt;&gt; 'expected str, bytes or os.PathLike object, not geoprocessing value object</msg><msg code="-2147467259" type="100">Failed to execute (FeatureToKML).</msg><msg code="0" type="3">Failed at viernes, 28 de febrero de 2025 12:01:04 (Elapsed Time: 0,26 seconds)</msg></messages>

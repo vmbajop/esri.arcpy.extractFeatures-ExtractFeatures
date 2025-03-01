@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: jueves, 27 de febrero de 2025 12:16:48</msg><msg code="0" type="0">
-He pasado por updateParameterInfo</msg><msg code="0" type="0">
-He pasado por updateMessages</msg><msg code="0" type="0">
-Comprobada la existencia de una capa temporal previa.</msg><msg code="1" type="100">ERROR en COMPROBAR CARPETA &gt;&gt;&gt; 'FeatureToKML.CrearCarpetaResultados() missing 1 required positional argument: 'nombreCarpeta''</msg><msg code="0" type="0">
-Iniciado el proceso de creación de capas a partir de registros a las 12:16:48 27.02.2025</msg><msg code="1" type="100">ERROR EN LA EXTRACCIÓN &gt;&gt;&gt; 'ERROR 000210: Cannot create output D:\trabajo\Git\python\ArcPy\esri.arcpy.extractFeatures-Feature2KML\desarrollo\Feature2KML999_resultados\Extracciones999KML_AUSTRALIA.kml
-Failed to execute (LayerToKML).
-</msg><msg code="-2147467259" type="100">Failed to execute (FeatureToKML).</msg><msg code="0" type="3">Failed at jueves, 27 de febrero de 2025 12:16:49 (Elapsed Time: 1.06 seconds)</msg></messages>
