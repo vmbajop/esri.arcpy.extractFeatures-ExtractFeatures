@@ -5,6 +5,7 @@
 2. Validar los parámetros
 3. validar la post ejecución
 4. controlar el idioma de los mensajes y interfaz ----> es probable que nos lleve a paquetizar.
+5. Debe redactarse una diferencia entre esta rama y la rama *fet2kml-folder* desde el punto de vista del interés para el desarrollo de python.
 
 ## versión 1.2
 
