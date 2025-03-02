@@ -16,13 +16,14 @@ class Toolbox(object):
 class FeatureToKML(object):
     def __init__(self):
         # self.name = "FeatureToKML"
-        self.label = "Feature To KML"
+        self.version = "2.0"
+        self.label = "Feature To KML v" + self.version
         self.alias = "Feature2KML"        
         
         #DUDA DE SI SIRVEN
         self.description = "Extraer entidades de una capa para crear una nueva capa KML por cada entidad, que tendrá por nombre el valor de un campo elegido por el usuario."
         self.canRunInBackground = False
-        self.version = "2.0"
+        
 
         #-------------------------------------
         # propiedades parametrizables
