@@ -16,13 +16,14 @@ class Toolbox(object):
 class FeatureToKML(object):
     def __init__(self):
         # self.name = "FeatureToKML"
-        self.label = "Feature To KML"
+        self.version = "2.0"
+        self.label = "Feature To KML v" + self.version
         self.alias = "Feature2KML"        
         
         #DUDA DE SI SIRVEN
         self.description = "Extraer entidades de una capa para crear una nueva capa KML por cada entidad, que tendrá por nombre el valor de un campo elegido por el usuario."
         self.canRunInBackground = False
-        self.version = "1.1.1"
+        
 
         #-------------------------------------
         # propiedades parametrizables
@@ -35,7 +36,7 @@ class FeatureToKML(object):
         #-------------------------------------
         proyecto = arcpy.mp.ArcGISProject("CURRENT")
         self.mapa = proyecto.listMaps()[0]
-        self.ruta_proyecto = proyecto.filePath
+        self.ruta_proyecto = proyecto.homeFolder
          #-------------------------------------    
 
     def getParameterInfo(self):
@@ -68,23 +69,14 @@ class FeatureToKML(object):
         param2.value = "ExtraccionesKML_"
 
         param3 = arcpy.Parameter(
-            name="NombreCarpetaResultados",
-            displayName="Nombre de la carpeta de salidad de los resultados",
-            direction="Input",
-            parameterType="Required",
-            datatype="GPString"
-        )
-        param3.value="Feature2KML_resultados"
-
-        param4 = arcpy.Parameter(
             name="CarpetaResultados",
             displayName="Carpeta de salidad de los resultados",
-            direction="Output",
-            parameterType="Derived",
+            direction="Input",
+            parameterType="Required",
             datatype="DEFolder"
         )
-
-        params =[param0, param1, param2, param3, param4]
+        
+        params =[param0, param1, param2, param3]
         return params
     
 # region NO USADOS
@@ -93,32 +85,33 @@ class FeatureToKML(object):
         return True
     
     def updateMessages(self, parameters):
-        """Modify the messages created by internal validation for each tool
-        parameter. This method is called after internal validation."""
+        # Solo si el usuario ha cambiado el parámetro y ha seleccionado una carpeta
+        parameters[3].clearMessage()
+        if parameters[3].altered and parameters[3].valueAsText:
+            try:
+                if os.listdir(parameters[3].valueAsText):
+                    parameters[3].setErrorMessage("La carpeta contiene archivos y sin embargo debería estar vacía.")
+                else:
+                    parameters[3].clearMessage()
+            except Exception as e:
+                parameters[3].setErrorMessage(f"Error al acceder a la carpeta: {e}")
+
         return
 
     def updateParameters(self, parameters):
-        """Modify the values and properties of parameters before internal
-        validation is performed.  This method is called whenever a parameter
-        has been changed."""
-        if parameters[3].value:
-            parameters[4].value = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
-        else:
-            # self.carpeta_resultado = os.path.join(os.path.dirname(self.ruta_proyecto), parameters[3].valueAsText)
-            arcpy.AddError(f"\nNo hay carpeta de salida")
+        
         return
 # endregion    
 
 # region EXECUTE
     def execute(self, parameters, messages):
         arcpy.AddMessage(f"\n{self.label}:\n{self.description}\nversion: {self.version}")
-        arcpy.AddMessage(f"\nLa carpeta de salidad es {parameters[4].value}")
+        arcpy.AddMessage(f"\nLa carpeta de salidad es {parameters[3].value}")
         try:           
             self.numero_registros = arcpy.management.GetCount(parameters[0].value)
             arcpy.SetProgressor("step", f"Comienza el procesado de {self.numero_registros} registros", 0, int(self.numero_registros.getOutput(0)), 1)
 
             self.ComprobarExistenciaCapaTemporalTOC()
-            self.ComprobarExistenciaCarpetaResultados(parameters[3].valueAsText, parameters[4].valueAsText)
 
             self.ExtraerFeature2KML(parameters)
         except Exception as e:
@@ -131,49 +124,39 @@ class FeatureToKML(object):
                 arcpy.AddMessage(f"\nEliminada una capa con nombre '{self.nombre_capa_temporal}'")
         arcpy.AddMessage("\nComprobada la existencia de una capa temporal previa.")
 
-    def ComprobarExistenciaCarpetaResultados(self, nombreCarpeta, carpeta_resultado):
-        try:  
-            if os.path.exists(carpeta_resultado):
-                if not os.listdir(carpeta_resultado):
-                    arcpy.AddMessage(f"\nLa carpeta '{carpeta_resultado}' existe, está vacía y se va a reutilizar")
-                else:
-                    fh = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-                    nuevo_nombre = f"{nombreCarpeta}_{fh}"
-                    nueva_ruta = os.path.join(os.path.dirname(carpeta_resultado), nuevo_nombre)
-                    os.rename(carpeta_resultado, nueva_ruta)
-                    arcpy.AddWarning(f"\nExiste una carpeta con el nombre '{nombreCarpeta}' con contenido, por lo que se ha renombrada como '{nuevo_nombre}'")
-                    self.CrearCarpetaResultados(nombreCarpeta, carpeta_resultado)
-            else:
-                self.CrearCarpetaResultados(nombreCarpeta, carpeta_resultado)
-            
-        except Exception as e:
-            arcpy.AddError(f"\nERROR en COMPROBAR CARPETA >>> '{e}'")
-
-    def CrearCarpetaResultados(self, nombreCarpeta, carpeta_resultado):
-        os.makedirs(carpeta_resultado)
-        arcpy.AddMessage(f"\nSe ha creado la carpeta '{nombreCarpeta}'")
-
     def ExtraerFeature2KML(self, parameters):
         try:
+            # Parámetros
             capa_entrada = parameters[0].value
             campo_nombre = parameters[1].valueAsText
-            prenombre_capa_salida = parameters[2].valueAsText
+            # prenombre_capa_salida = parameters[2].valueAsText
 
+            # cursor con los registros de la capa de entrada, de la que se cogen dos campos: OID/ID y el campo seleccionado para dar nombre a las capas
             with arcpy.da.SearchCursor(capa_entrada, ['OID@', campo_nombre]) as cursor:
                 arcpy.AddMessage("\nIniciado el proceso de creación de capas a partir de registros a las " + str(datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")))
                 i = 1
                 for row in cursor:
+                    # cogemos el registro actual mediante una sentencia SQL que dice: ObjectID = al valor del campo [0] del registro actual.
+                    # El campo [0] es OID, el elegido en la intefaz es el [1]
                     sql = f"OBJECTID = {row[0]}"
-                    arcpy.management.MakeFeatureLayer(capa_entrada, self.nombre_capa_temporal, sql)
-                    nombre_kml = prenombre_capa_salida + f"{row[1]}" + ".kml"
+
+                    # arcpy.management.MakeFeatureLayer(capa_entrada, self.nombre_capa_temporal, sql)
+                    """ nombre_kml = prenombre_capa_salida + f"{row[1]}" + ".kml"
                     # Comprobar si existe el nombre y renombrar
                     count = 1
-                    while arcpy.Exists(os.path.join(parameters[4].valueAsText, nombre_kml)):
+                    while arcpy.Exists(os.path.join(parameters[3].valueAsText, nombre_kml)):
                         nombre_kml = prenombre_capa_salida + f"{row[1]}"+ str(count) + ".kml"
-                        count += 1
+                        count += 1 """
+                    nombre_kml = self.GenerarNombreCapaSalida_Contador(parameters, row)
                     # -----------------------------------------
-                    arcpy.conversion.LayerToKML(self.nombre_capa_temporal, parameters[4].valueAsText + "\\" + nombre_kml)
-                    arcpy.management.Delete(self.nombre_capa_temporal)
+                    
+                    # Separar la extension kml del nombre del archivo
+                    nombre_sin_extension, extension = os.path.splitext(nombre_kml)
+
+                    arcpy.management.MakeFeatureLayer(capa_entrada, nombre_sin_extension + "fl", sql)
+
+                    arcpy.conversion.LayerToKML(nombre_sin_extension + "fl", parameters[3].valueAsText + "\\" + nombre_kml)
+                    arcpy.management.Delete(nombre_sin_extension + "fl")
                     arcpy.SetProgressorLabel(f"Procesados {i} de {self.numero_registros} registros")
                     arcpy.SetProgressorPosition(i)
                     i = i + 1
@@ -181,6 +164,15 @@ class FeatureToKML(object):
                 arcpy.AddMessage("\nFinalizado el proceso de creación de capas a partir de registros a las " + str(datetime.datetime.now().strftime("%H:%M:%S %d.%m.%Y")) + "\n")
         except Exception as e:
             arcpy.AddError(f"\nERROR EN LA EXTRACCIÓN >>> '{e}")
+
+    def GenerarNombreCapaSalida_Contador(self, parameters, row):
+        nombre_kml = parameters[2].valueAsText + f"{row[1]}" + ".kml"
+        # Comprobar si existe el nombre y renombrar
+        count = 1
+        while arcpy.Exists(os.path.join(parameters[3].valueAsText, nombre_kml)):
+            nombre_kml = parameters[2].valueAsText + f"{row[1]}"+ str(count) + ".kml"
+            count += 1
+        return nombre_kml
 # endregion
 
     def postExecute(self, parameters):
