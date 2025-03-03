@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: lunes, 3 de marzo de 2025 9:17:39</msg><msg code="0" type="0">
+Feature To KML v2.0:
+
+Extraer entidades de una capa para crear una nueva capa KML por cada entidad, que tendrá por nombre el valor de un campo elegido por el usuario.</msg><msg code="0" type="0">
+La carpeta de salidad es 
+D:\trabajo\Git\python\ArcPy\esri.arcpy.extractFeatures-ExtractFeatures\fet2kml-folder\venga</msg><msg code="0" type="0">
+Comprobada la existencia de una capa temporal previa.</msg><msg code="0" type="0">
+Iniciado el proceso de creación de capas a partir de registros a las 09:17:39 03.03.2025</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_AUSTRALIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CHINA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BRUNEI.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CHRISTMAS ISLAND.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BERMUDA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CANADA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_COOK ISLANDS.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ .kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BAKER ISLAND.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_COSTA RICA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BANGLADESH.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BURMA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CAMBODIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_COCOS (KEELING) ISLANDS.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CHINA15.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BHUTAN.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_AFGHANISTAN.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BRITISH INDIAN OCEAN TERRITORY.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ARMENIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BAHRAIN.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ 21.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BAHAMAS, THE.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ 23.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BOUVET ISLAND.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BELARUS.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ 26.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CHILE.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CLIPPERTON ISLAND.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ANTIGUA AND BARBUDA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ 30.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ANGUILLA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BRITISH VIRGIN ISLANDS.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CAYMAN ISLANDS.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BELIZE.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BULGARIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ALBANIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_AUSTRIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BARBADOS.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ARUBA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BURKINA FASO.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CHAD.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_AZERBAIJAN.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ANDORRA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BELGIUM.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BOSNIA AND HERZEGOVINA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ALGERIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ARGENTINA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BRAZIL.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BOTSWANA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_ANGOLA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_COMOROS.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CONGO, DEMOCRATIC REPUBLIC OF THE.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BOLIVIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BURUNDI.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CONGO.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CAMEROON.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CÔTE D'IVOIRE.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_COLOMBIA.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CENTRAL AFRICAN REPUBLIC.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_BENIN.kml</msg><msg code="0" type="0">
+Creada la capa ExtraccionesKML_CAPE VERDE.kml</msg><msg code="0" type="0">
+Finalizado el proceso de creación de capas a partir de registros a las 09:18:12 03.03.2025
+</msg><msg code="0" type="3">Succeeded at lunes, 3 de marzo de 2025 9:18:12 (Elapsed Time: 33.53 seconds)</msg></messages>
