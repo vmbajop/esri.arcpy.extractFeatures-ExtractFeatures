@@ -51,7 +51,7 @@ class FeatureToKML(object):
 
         param1 = arcpy.Parameter(
             name="CampoIdentificativo",
-            displayName="Campo de identificación de las entidades",
+            displayName="Campo identificativo",
             direction="Input",
             parameterType="Required",
             datatype="Field"
@@ -105,8 +105,8 @@ class FeatureToKML(object):
 
 # region EXECUTE
     def execute(self, parameters, messages):
-        arcpy.AddMessage(f"\n{self.label}:\n\n{self.description}")
-        arcpy.AddMessage(f"\nLa carpeta de salidad es \n{parameters[3].value}")
+        arcpy.AddMessage(f"\n{self.label}:\n{self.description}\nversion: {self.version}")
+        arcpy.AddMessage(f"\nLa carpeta de salidad es {parameters[3].value}")
         try:           
             self.numero_registros = arcpy.management.GetCount(parameters[0].value)
             arcpy.SetProgressor("step", f"Comienza el procesado de {self.numero_registros} registros", 0, int(self.numero_registros.getOutput(0)), 1)
@@ -139,19 +139,24 @@ class FeatureToKML(object):
                     # cogemos el registro actual mediante una sentencia SQL que dice: ObjectID = al valor del campo [0] del registro actual.
                     # El campo [0] es OID, el elegido en la intefaz es el [1]
                     sql = f"OBJECTID = {row[0]}"
-                    #nombre_kml = self.GenerarNombreCapaSalida_Contador(parameters, row)
-                    nombre_kml = self.GenerarNombreCapaSalida(parameters, row)
+
+                    # arcpy.management.MakeFeatureLayer(capa_entrada, self.nombre_capa_temporal, sql)
+                    """ nombre_kml = prenombre_capa_salida + f"{row[1]}" + ".kml"
+                    # Comprobar si existe el nombre y renombrar
+                    count = 1
+                    while arcpy.Exists(os.path.join(parameters[3].valueAsText, nombre_kml)):
+                        nombre_kml = prenombre_capa_salida + f"{row[1]}"+ str(count) + ".kml"
+                        count += 1 """
+                    nombre_kml = self.GenerarNombreCapaSalida_Contador(parameters, row)
+                    # -----------------------------------------
                     
                     # Separar la extension kml del nombre del archivo
                     nombre_sin_extension, extension = os.path.splitext(nombre_kml)
 
-                    nombre_sin_extension = nombre_sin_extension + "_FL"
+                    arcpy.management.MakeFeatureLayer(capa_entrada, nombre_sin_extension + "fl", sql)
 
-                    arcpy.management.MakeFeatureLayer(capa_entrada, nombre_sin_extension, sql)
-
-                    arcpy.conversion.LayerToKML(nombre_sin_extension, parameters[3].valueAsText + "\\" + nombre_kml)
-                    arcpy.AddMessage(f"Creada la capa {nombre_kml}")
-                    arcpy.management.Delete(nombre_sin_extension)
+                    arcpy.conversion.LayerToKML(nombre_sin_extension + "fl", parameters[3].valueAsText + "\\" + nombre_kml)
+                    arcpy.management.Delete(nombre_sin_extension + "fl")
                     arcpy.SetProgressorLabel(f"Procesados {i} de {self.numero_registros} registros")
                     arcpy.SetProgressorPosition(i)
                     i = i + 1
@@ -160,22 +165,13 @@ class FeatureToKML(object):
         except Exception as e:
             arcpy.AddError(f"\nERROR EN LA EXTRACCIÓN >>> '{e}")
 
-    '''Crea el nombre de salida iterando si ya existe un nombre igual o no. Si existe, le añade un número correlativo'''
     def GenerarNombreCapaSalida_Contador(self, parameters, row):
         nombre_kml = parameters[2].valueAsText + f"{row[1]}" + ".kml"
         # Comprobar si existe el nombre y renombrar
         count = 1
         while arcpy.Exists(os.path.join(parameters[3].valueAsText, nombre_kml)):
-            nombre_kml = parameters[2].valueAsText + f"{row[1]}" + str(count) + ".kml"
+            nombre_kml = parameters[2].valueAsText + f"{row[1]}"+ str(count) + ".kml"
             count += 1
-        return nombre_kml
-    
-    '''Crea el nombre de salida añadiendo el OID'''
-    def GenerarNombreCapaSalida(self, parameters, row):
-        nombre_kml = parameters[2].valueAsText + f"{row[1]}" + ".kml"
-        while arcpy.Exists(os.path.join(parameters[3].valueAsText, nombre_kml)):
-            nombre_kml = parameters[2].valueAsText + f"{row[1]}" + f"{row[0]}" + ".kml"
-        # Comprobar si existe el nombre y renombrar
         return nombre_kml
 # endregion
 
