@@ -86,9 +86,9 @@ class FeatureToKML(object):
         return True
     
     def updateMessages(self, parameters):
-        # Solo si el usuario ha cambiado el parámetro y ha seleccionado una carpeta
-        parameters[3].clearMessage()
+        # Solo si el usuario ha cambiado el parámetro y ha seleccionado una carpeta        
         if parameters[3].altered and parameters[3].valueAsText:
+            parameters[3].clearMessage()
             try:
                 if os.listdir(parameters[3].valueAsText):
                     parameters[3].setErrorMessage("La carpeta contiene archivos y sin embargo debería estar vacía.")
@@ -191,7 +191,7 @@ class FeatureToKML(object):
 class FeatureToGDB(object):
     def __init__(self):
         # self.name = "FeatureToKML"
-        self.version = "1.0"
+        self.version = "1.0.1"
         self.label = "Feature To GDB v" + self.version
         self.alias = "Feature2GDB"        
         
@@ -252,17 +252,17 @@ class FeatureToGDB(object):
         return True
     
     def updateMessages(self, parameters):
-        # Comprobar que la salida es una GeoDatabase y no una carpeta
-        parameters[2].clearMessage()
+        # Comprobar que la salida es una GeoDatabase y no una carpeta        
         if parameters[2].altered and parameters[2].value:
+            parameters[2].clearMessage()
             try:
                 desc = arcpy.Describe(parameters[2].value)
                 if desc.dataType != "Workspace" or not (desc.workspaceType in ["LocalDatabase", "RemoteDatabase"]):
-                    parameters[2].setErrorMessage("Debe seleccionar una GDB")
-                else:
-                    parameters[2].clearMessage()
+                    parameters[2].setErrorMessage("\nDebe seleccionar una Geodatabase")
+                #if desc.extension.lower() == "gpkg":
+                #    parameters[2].setErrorMessage("\nLa salida no puede ser una Base de Datos de GeoPackage")
             except Exception as e:
-                parameters[2].setErrorMessage(f"Error al acceder a la GDB: {e}")
+                parameters[2].setErrorMessage(f"\nError al comprobar el Workspace de salida: {e}")
                 return
         if parameters[3].altered:
             parameters[3].clearMessage()
@@ -280,7 +280,12 @@ class FeatureToGDB(object):
         return
 
     def updateParameters(self, parameters):
-        
+        # desactivar el parámetro del nombre del feature dataset si se elige una BBDD Geopackage
+        parameters[3].enabled = True
+        if parameters[2].altered and parameters[2].value:
+            desc = arcpy.Describe(parameters[2].value)
+            if desc.extension.lower() == "gpkg":
+                parameters[3].enabled = False
         return
     
     def execute(self, parameters, messages):
@@ -306,17 +311,21 @@ class FeatureToGDB(object):
             
             # crear FeatureDataset
             try:
-                featDS = arcpy.management.CreateFeatureDataset(parameters[2].value, parameters[3].valueAsText, sr).getOutput(0)
-                arcpy.AddMessage(f"\nFeature Dataset creado en: {featDS}")
+                desc = arcpy.Describe(parameters[2].value)
+                if desc.extension.lower() == "gpkg": # si es un GeoPackage, no se crea el featDS
+                    featDS = None
+                else:
+                    featDS = arcpy.management.CreateFeatureDataset(parameters[2].value, parameters[3].valueAsText, sr).getOutput(0)
+                    arcpy.AddMessage(f"\nFeature Dataset creado en: {featDS}")
             except Exception as fdex:
                 arcpy.AddError(f"\nError al crear el Feature Dataser: {fdex}")
                 return
 
             # Seleccionar entidad y sacarla a GDB
             with arcpy.da.SearchCursor(parameters[0].value, ['OID@', parameters[1].valueAsText]) as cursor:
-                i = 0
+                i = 1
                 for row in cursor:
-                    featureClass, nombreFC = self.ObtenerFeatureClass(row[1], str(row[0]), featDS)
+                    featureClass, nombreFC = self.ObtenerFeatureClass(row[1], str(row[0]), featDS, parameters[2].valueAsText)
                     sql = f"OBJECTID = {row[0]}"
                     arcpy.conversion.ExportFeatures(parameters[0].value, featureClass, sql)
                     arcpy.SetProgressorPosition(i)
@@ -327,21 +336,24 @@ class FeatureToGDB(object):
             arcpy.AddError(f"ERROR en Extración de entidades a GDB >>> {ex}")
             return
 
-    def ObtenerFeatureClass(self, nombre, oid, featDS):
+    def ObtenerFeatureClass(self, nombre, oid, featDS, gdb):
         nombre = str(nombre).strip() if nombre else ""                          # si nombre contiene algo .strip elimina espacios en blanco al principio y al final, si no le asigna valor ""
         if not nombre or re.match(r'^\d', nombre):                              # si nombre "" o vacío o empieza (^) por dígito del 0 al 9 
             nombre = "SN_" + f"{oid}"
         
         nombre = re.sub(r'[^a-zA-Z0-9_]', "_", nombre)                          # re --> regex (expresiones regulares) .sub (susituir) r'[^a-zA-Z0-9_]' es el patrón que no permite espacio, ni tildes ni símbolos, ni ñ y lo sustituye por "_"
         
-        i = 1
         nombre_salida = nombre
-        while arcpy.Exists(os.path.join(os.path.dirname(featDS), nombre_salida)):      # os.path.dirname(featDS) es el directorio del featDatSet, que es la GDB
-            i += 1
-            nombre_salida = f"{nombre}_{i}"
+        if featDS is not None:                                                   # si es un geopackage featDS vendrá como none
+            i = 1            
+            while arcpy.Exists(os.path.join(os.path.dirname(featDS), nombre_salida)):      # os.path.dirname(featDS) es el directorio del featDatSet, que es la GDB
+                i += 1
+                nombre_salida = f"{nombre}_{i}"                
             
-        
-        featureClass = os.path.join(featDS, nombre_salida)
+            featureClass = os.path.join(featDS, nombre_salida)
+        else:
+            nombre_salida = f"{nombre}_{oid}"
+            featureClass = os.path.join(gdb, nombre_salida)
         
         return featureClass, nombre_salida
 
