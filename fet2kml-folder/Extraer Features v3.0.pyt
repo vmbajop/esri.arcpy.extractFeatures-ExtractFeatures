@@ -316,7 +316,7 @@ class FeatureToGDB(object):
             with arcpy.da.SearchCursor(parameters[0].value, ['OID@', parameters[1].valueAsText]) as cursor:
                 i = 0
                 for row in cursor:
-                    featureClass, nombreFC = self.ObtenerNombreFC(row[1], str(row[0]), featDS)
+                    featureClass, nombreFC = self.ObtenerFeatureClass(row[1], str(row[0]), featDS)
                     sql = f"OBJECTID = {row[0]}"
                     arcpy.conversion.ExportFeatures(parameters[0].value, featureClass, sql)
                     arcpy.SetProgressorPosition(i)
@@ -327,7 +327,7 @@ class FeatureToGDB(object):
             arcpy.AddError(f"ERROR en Extración de entidades a GDB >>> {ex}")
             return
 
-    def ObtenerNombreFC(self, nombre, oid, featDS):
+    def ObtenerFeatureClass(self, nombre, oid, featDS):
         nombre = str(nombre).strip() if nombre else ""                          # si nombre contiene algo .strip elimina espacios en blanco al principio y al final, si no le asigna valor ""
         if not nombre or re.match(r'^\d', nombre):                              # si nombre "" o vacío o empieza (^) por dígito del 0 al 9 
             nombre = "SN_" + f"{oid}"
