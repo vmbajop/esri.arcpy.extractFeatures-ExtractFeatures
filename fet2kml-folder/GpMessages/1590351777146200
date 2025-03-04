@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: lunes, 3 de marzo de 2025 17:53:15</msg><msg code="0" type="0">
-Feature To GDB v1.0:
-
-Extraer entidades de una capa para crear una nueva capa GDB por cada entidad, que tendrá por nombre el valor de un campo elegido por el usuario.</msg><msg code="0" type="0">Inicio de la ejecución de Feature2GDB</msg><msg code="0" type="0">Feature Dataset creado en: D:\trabajo\Git\python\ArcPy\esri.arcpy.extractFeatures-ExtractFeatures\fet2kml-folder\datos-prueba.gdb\feat2gdb</msg><msg code="1" type="100">ERROR en Extración de entidades a GDB &gt;&gt;&gt; Failed to execute. Parameters are not valid.
-ERROR 002852: Output Feature Class: D:\trabajo\Git\python\ArcPy\esri.arcpy.extractFeatures-ExtractFeatures\fet2kml-folder\datos-prueba.gdb\feat2gdb\AUSTRALIA exists within geodatabase as D:\trabajo\Git\python\ArcPy\esri.arcpy.extractFeatures-ExtractFeatures\fet2kml-folder\datos-prueba.gdb\featTOgdb\AUSTRALIA. A feature class name can only exist once within a geodatabase, including within all feature datasets.
-Failed to execute (ExportFeatures).
-</msg><msg code="0" type="0">Fin correcto de la ejecución</msg><msg code="-2147467259" type="100">Failed to execute (FeatureToGDB).</msg><msg code="0" type="3">Failed at lunes, 3 de marzo de 2025 17:53:17 (Elapsed Time: 1,96 seconds)</msg></messages>

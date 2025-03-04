@@ -225,24 +225,24 @@ class FeatureToGDB(object):
             datatype="Field"
         )
         param1.parameterDependencies = [param0.name]
-        param1.filter.list = ["Text", "GUID", "GlobalID", "Date", "TimeOnly", "DateOnly", "TimestampOffset"]
+        param1.filter.list = ["Text", "GUID", "GlobalID", "Date", "TimeOnly", "DateOnly", "TimestampOffset"]        
 
         param2 = arcpy.Parameter(
-            name="nombreFeatureDataset",
-            displayName="Nombre del Feature Dataset contenedor",
-            direction="Input",
-            parameterType="Required",
-            datatype="GPString"
-        )
-        param2.value = "featTOgdb"
-
-        param3 = arcpy.Parameter(
             name="GDBSalida",
             displayName="GDB de salidad de los resultados",
             direction="Input",
             parameterType="Required",
             datatype="DEWorkspace"
         )
+
+        param3 = arcpy.Parameter(
+            name="nombreFeatureDataset",
+            displayName="Nombre del Feature Dataset contenedor",
+            direction="Input",
+            parameterType="Required",
+            datatype="GPString"
+        )
+        param3.value = "feat2gdb"
         
         params =[param0, param1, param2, param3]
         return params
@@ -252,18 +252,31 @@ class FeatureToGDB(object):
         return True
     
     def updateMessages(self, parameters):
-        # Solo si el usuario ha cambiado el parámetro y ha seleccionado una carpeta
-        parameters[3].clearMessage()
-        if parameters[3].altered and parameters[3].value:
+        # Comprobar que la salida es una GeoDatabase y no una carpeta
+        parameters[2].clearMessage()
+        if parameters[2].altered and parameters[2].value:
             try:
-                desc = arcpy.Describe(parameters[3].value)
+                desc = arcpy.Describe(parameters[2].value)
                 if desc.dataType != "Workspace" or not (desc.workspaceType in ["LocalDatabase", "RemoteDatabase"]):
-                    parameters[3].setErrorMessage("Debe seleccionar una GDB")
+                    parameters[2].setErrorMessage("Debe seleccionar una GDB")
                 else:
-                    parameters[3].clearMessage()
+                    parameters[2].clearMessage()
             except Exception as e:
-                parameters[3].setErrorMessage(f"Error al acceder a la GDB: {e}")
+                parameters[2].setErrorMessage(f"Error al acceder a la GDB: {e}")
                 return
+        if parameters[3].altered:
+            parameters[3].clearMessage()
+            if " " in parameters[3].valueAsText:
+                parameters[3].setErrorMessage("El nombre del Feature Dataset no puede contener espacios en blanco")
+            elif parameters[3].valueAsText[0].isdigit():
+                parameters[3].setErrorMessage("El nombre del Feature Dataset no puede comenzar por un número")
+            elif not re.match(r'^[A-Za-z0-9_]+$', parameters[3].valueAsText):
+                parameters[3].setErrorMessage("El nombre del Feature Dataset sólo puede contener letras y números")
+            else:
+                arcpy.env.workspace = parameters[2].valueAsText
+                fds_existentes = arcpy.ListDatasets("*", "Feature")                
+                if parameters[3].valueAsText in fds_existentes:
+                    parameters[3].setErrorMessage(f"Ya existe un Feature Dataset con el mismo nombre que se indica en la opción.")
         return
 
     def updateParameters(self, parameters):
@@ -293,59 +306,44 @@ class FeatureToGDB(object):
             
             # crear FeatureDataset
             try:
-                featDS = arcpy.management.CreateFeatureDataset(parameters[3].value, parameters[2].valueAsText, sr).getOutput(0)
-                arcpy.AddMessage(f"Feature Dataset creado en: {featDS}")
+                featDS = arcpy.management.CreateFeatureDataset(parameters[2].value, parameters[3].valueAsText, sr).getOutput(0)
+                arcpy.AddMessage(f"\nFeature Dataset creado en: {featDS}")
             except Exception as fdex:
-                arcpy.AddError(f"Error al crear el Feature Dataser: {fdex}")
+                arcpy.AddError(f"\nError al crear el Feature Dataser: {fdex}")
                 return
 
             # Seleccionar entidad y sacarla a GDB
-            nombres_usados = set()
             with arcpy.da.SearchCursor(parameters[0].value, ['OID@', parameters[1].valueAsText]) as cursor:
                 i = 0
                 for row in cursor:
-                    nombre = self.ObtenerNombreValido_Complex(row[1], str(row[0]), nombres_usados)
-                    # nombre = self.ObtenerNombreValido(row[1], str(row[0]))
-                    featureClass = os.path.join(featDS, nombre)
+                    featureClass, nombreFC = self.ObtenerNombreFC(row[1], str(row[0]), featDS)
                     sql = f"OBJECTID = {row[0]}"
                     arcpy.conversion.ExportFeatures(parameters[0].value, featureClass, sql)
                     arcpy.SetProgressorPosition(i)
                     arcpy.SetProgressorLabel(f"Procesados {i} de {self.numero_registros} registros")
-                    arcpy.AddMessage(f"creada la capa {nombre}")
+                    arcpy.AddMessage(f"creada la capa {nombreFC}")
                     i+=1
         except Exception as ex:
             arcpy.AddError(f"ERROR en Extración de entidades a GDB >>> {ex}")
             return
 
-    def ObtenerNombreValido(self, nombre, oid):
-        nombre = str(nombre).strip() if nombre else ""
-        # Comprobamos si es vacío, solo espacios o empieza por número
-        if not nombre or re.match(r'^\d', nombre):
+    def ObtenerNombreFC(self, nombre, oid, featDS):
+        nombre = str(nombre).strip() if nombre else ""                          # si nombre contiene algo .strip elimina espacios en blanco al principio y al final, si no le asigna valor ""
+        if not nombre or re.match(r'^\d', nombre):                              # si nombre "" o vacío o empieza (^) por dígito del 0 al 9 
             nombre = "SN_" + f"{oid}"
-        else:
-            nombre = f"{nombre}_{oid}"
-
-        # Sustituir caracteres no permitidos
-        nombre = re.sub(r'[^a-zA-Z0-9_]', "_", nombre)
-    
-    def ObtenerNombreValido_Complex(self, nombre, oid, nombres_usados):
-        nombre = str(nombre).strip() if nombre else ""
-
-        # Comprobamos si es vacío, solo espacios o empieza por número
-        if not nombre or re.match(r'^\d', nombre):
-            nombre = "SN" + f"{oid}"
-
-        # Sustituir caracteres no permitidos
-        nombre = re.sub(r'[^a-zA-Z0-9_]', "_", nombre)
-
-        # Si el nombre ya se ha usado, añadir el OID
-        if nombre in nombres_usados:
-            nombre = f"{nombre}_{oid}"
-
-        # Guardamos el nombre para que no se repita
-        nombres_usados.add(nombre)
-
-        return nombre
+        
+        nombre = re.sub(r'[^a-zA-Z0-9_]', "_", nombre)                          # re --> regex (expresiones regulares) .sub (susituir) r'[^a-zA-Z0-9_]' es el patrón que no permite espacio, ni tildes ni símbolos, ni ñ y lo sustituye por "_"
+        
+        i = 1
+        nombre_salida = nombre
+        while arcpy.Exists(os.path.join(os.path.dirname(featDS), nombre_salida)):      # os.path.dirname(featDS) es el directorio del featDatSet, que es la GDB
+            i += 1
+            nombre_salida = f"{nombre}_{i}"
+            
+        
+        featureClass = os.path.join(featDS, nombre_salida)
+        
+        return featureClass, nombre_salida
 
     def postExecute(self, parameters):
         """This method takes place after outputs are processed and

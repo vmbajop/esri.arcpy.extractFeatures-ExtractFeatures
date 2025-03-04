@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?><messages><msg code="0" type="2">Start Time: lunes, 3 de marzo de 2025 8:57:26</msg><msg code="0" type="0">
-Feature To KML v2.0:
-Extraer entidades de una capa para crear una nueva capa KML por cada entidad, que tendrá por nombre el valor de un campo elegido por el usuario.
-version: 2.0</msg><msg code="0" type="0">
-La carpeta de salidad es D:\trabajo\Git\python\ArcPy\esri.arcpy.extractFeatures-ExtractFeatures\fet2kml-folder\salida</msg><msg code="0" type="0">
-Comprobada la existencia de una capa temporal previa.</msg><msg code="0" type="0">
-Iniciado el proceso de creación de capas a partir de registros a las 08:57:27 03.03.2025</msg><msg code="0" type="0">
-Finalizado el proceso de creación de capas a partir de registros a las 08:57:51 03.03.2025
-</msg><msg code="0" type="3">Succeeded at lunes, 3 de marzo de 2025 8:57:52 (Elapsed Time: 25.47 seconds)</msg></messages>
